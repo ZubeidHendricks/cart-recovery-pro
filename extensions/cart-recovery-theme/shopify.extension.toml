@@ -1,0 +1,4 @@
+name = "CartRecovery Pro Theme Extension"
+handle = "cart-recovery-theme"
+type = "theme_app_extension"
+api_version = "2025-04"

@@ -1,0 +1,10 @@
+{
+  "name": "CartRecovery Pro",
+  "settings": {
+    "general": "General Settings",
+    "abandonment": "Abandonment Detection",
+    "popup": "Exit Popup",
+    "email": "Email Recovery",
+    "analytics": "Analytics & Tracking"
+  }
+}

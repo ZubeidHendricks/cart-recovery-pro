@@ -1,0 +1,169 @@
+{% comment %}
+  CartRecovery Pro - Main template
+{% endcomment %}
+
+<div class="cart-recovery-container">
+  <!-- Recovery Popup -->
+  {% if block.settings.show_exit_popup %}
+    <div id="cart-recovery-popup" class="cart-recovery-popup" style="display: none;">
+      <div class="cart-recovery-modal">
+        <div class="cart-recovery-header">
+          <button class="cart-recovery-close">&times;</button>
+        </div>
+        
+        <div class="cart-recovery-content">
+          <div class="cart-recovery-icon">🛒</div>
+          <h2>{{ block.settings.popup_title | default: "Don't leave your cart behind!" }}</h2>
+          <p>{{ block.settings.popup_subtitle | default: "You have amazing items waiting for you." }}</p>
+          
+          <div class="cart-recovery-items">
+            <div class="cart-summary">
+              <span data-item-count>0</span> items • $<span data-total-price>0.00</span>
+            </div>
+            <div data-product-images class="product-images"></div>
+          </div>
+          
+          <div class="cart-recovery-actions">
+            <a href="#" data-recovery-url class="recovery-button">
+              {{ block.settings.recovery_button_text | default: "Complete Purchase" }}
+            </a>
+            
+            {% if block.settings.enable_email_capture %}
+              <form class="cart-recovery-email-form">
+                <input type="email" placeholder="Enter email for cart reminders" required>
+                <button type="submit">{{ block.settings.email_button_text | default: "Remind Me" }}</button>
+              </form>
+              <div class="email-success" style="display: none;">
+                ✅ We'll remind you about your cart!
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+</div>
+
+<!-- Load Scripts -->
+<script src="{{ 'abandonment-detector.js' | asset_url }}" defer></script>
+<script src="{{ 'email-recovery-service.js' | asset_url }}" defer></script>
+<script src="{{ 'recovery-popup-manager.js' | asset_url }}" defer></script>
+<script src="{{ 'recovery-analytics.js' | asset_url }}" defer></script>
+<script src="{{ 'cart-recovery-main.js' | asset_url }}" defer></script>
+
+<script>
+  window.CartRecoveryConfig = {
+    enabled: {{ block.settings.enabled | json }},
+    abandonmentMinutes: {{ block.settings.abandonment_minutes | default: 5 }},
+    showExitPopup: {{ block.settings.show_exit_popup | json }},
+    popupAutoHide: {{ block.settings.popup_auto_hide | default: 30 }},
+    emailEnabled: {{ block.settings.email_enabled | json }},
+    sendImmediate: {{ block.settings.send_immediate | json }},
+    sendReminder: {{ block.settings.send_reminder | json }},
+    sendFinal: {{ block.settings.send_final | json }},
+    highValueThreshold: {{ block.settings.high_value_threshold | default: 100 }},
+    webhookUrl: {{ block.settings.webhook_url | json }}
+  };
+</script>
+
+{% schema %}
+{
+  "name": "CartRecovery Pro",
+  "target": "body",
+  "settings": [
+    {
+      "type": "header",
+      "content": "General Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "enabled",
+      "label": "Enable Cart Recovery",
+      "default": true
+    },
+    {
+      "type": "number",
+      "id": "abandonment_minutes",
+      "label": "Minutes to wait before considering cart abandoned",
+      "default": 5
+    },
+    {
+      "type": "number",
+      "id": "high_value_threshold",
+      "label": "High value cart threshold ($)",
+      "default": 100
+    },
+    {
+      "type": "header",
+      "content": "Exit Popup Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_exit_popup",
+      "label": "Show exit-intent popup",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "popup_title",
+      "label": "Popup title",
+      "default": "Don't leave your cart behind!"
+    },
+    {
+      "type": "text",
+      "id": "popup_subtitle",
+      "label": "Popup subtitle",
+      "default": "You have amazing items waiting for you."
+    },
+    {
+      "type": "number",
+      "id": "popup_auto_hide",
+      "label": "Auto-hide popup after (seconds)",
+      "default": 30
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_email_capture",
+      "label": "Enable email capture in popup",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Email Recovery Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "email_enabled",
+      "label": "Enable email recovery",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "send_immediate",
+      "label": "Send immediate recovery email",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "send_reminder",
+      "label": "Send reminder email",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "send_final",
+      "label": "Send final chance email",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Analytics"
+    },
+    {
+      "type": "text",
+      "id": "webhook_url",
+      "label": "Analytics webhook URL (optional)"
+    }
+  ]
+}
+{% endschema %}
